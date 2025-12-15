@@ -1,0 +1,5 @@
+Total Sales = SUM('Cleaned sale Report xlsx'[GROSS AMT])
+Unit Rate = SUM('Cleaned sale Report xlsx'[RATE])
+Pcs count = COUNT('Cleaned sale Report xlsx'[PCS])
+Sales % = DIVIDE([Unit Rate], [Total Sales],0)
+Average Rate = AVERAGE('Cleaned sale Report xlsx'[RATE])
