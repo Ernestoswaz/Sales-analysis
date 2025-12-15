@@ -6,51 +6,55 @@
    ========================================================= */
 
 -- Assumed table: sales_data
--- Columns: Index, Date, Month, Customer, Style, SKU, Size, Pcs, Rate, Gross_amount
+-- Columns: Index, Date, Month, Customer, Style, SKU, Size, Pcs, Rate, sales
 
-/* ---------------------------------------------------------
    1. Overall Sales KPIs
    --------------------------------------------------------- */
-SELECT
-    COUNT(Index) AS total_orders,
-    SUM(Pcs) AS total_units,
-    SUM(Gross_amount) AS total_sales,
-    ROUND(SUM(Gross_amount) / NULLIF(SUM(Pcs), 0), 2) AS avg_rate_per_unit
-FROM sales_data;
 
+SELECT
+   COUNT(Index) AS total_orders,
+    SUM(Pcs) AS total_units,
+    SUM(sales) AS total_sales,
+    ROUND(SUM(sales) / NULLIF(SUM(Pcs), 0), 2) AS avg_rate_per_unit
+
+FROM
+  Sales_data
 
 /* ---------------------------------------------------------
    2. Sales Performance by SKU
    --------------------------------------------------------- */
+
 SELECT
-    SKU,
-    SUM(Gross_amount) AS total_sales,
+SKU,
+    SUM(sales) AS total_sales,
     SUM(Pcs) AS total_units,
-    ROUND(SUM(Gross_amount) / NULLIF(SUM(Pcs), 0), 2) AS avg_rate_per_unit
-FROM sales_data
+    ROUND(SUM(sales) / NULLIF(SUM(Pcs), 0), 2) AS avg_rate_per_unit
+FROM 
+   `dynamic-market-476712-i8.Sales_data.sales_report`
 GROUP BY SKU
 ORDER BY total_sales DESC;
-
 
 /* ---------------------------------------------------------
    3. % Contribution of Each SKU (Pareto Analysis)
    --------------------------------------------------------- */
+
 SELECT
     SKU,
-    SUM(Gross_amount) AS total_sales,
+    SUM(sales) AS total_sales,
     ROUND(
-        SUM(Gross_amount) * 100.0 /
-        SUM(SUM(Gross_amount)) OVER (),
+        SUM(sales) * 100.0 /
+        SUM(SUM(sales)) OVER (),
         2
     ) AS percent_of_total_sales
-FROM sales_data
+FROM 
+  `dynamic-market-476712-i8.Sales_data.sales_report`
 GROUP BY SKU
 ORDER BY total_sales DESC;
-
 
 /* ---------------------------------------------------------
    4. Cumulative % of Sales (80/20 Rule)
    --------------------------------------------------------- */
+
 SELECT
     SKU,
     total_sales,
@@ -63,48 +67,39 @@ SELECT
 FROM (
     SELECT
         SKU,
-        SUM(Gross_amount) AS total_sales
-    FROM sales_data
+        SUM(sales) AS total_sales
+    FROM 
+     `dynamic-market-476712-i8.Sales_data.sales_report`
     GROUP BY SKU
 ) t
 ORDER BY total_sales DESC;
 
 
 /* ---------------------------------------------------------
-   5. Monthly Sales Trend
+   5. Customer-wise Sales
    --------------------------------------------------------- */
-SELECT
-    Month,
-    SUM(Gross_amount) AS monthly_sales,
-    SUM(Pcs) AS monthly_units,
-    ROUND(SUM(Gross_amount) / NULLIF(SUM(Pcs), 0), 2) AS avg_rate_per_unit
-FROM sales_data
-GROUP BY Month
-ORDER BY Month;
 
-
-/* ---------------------------------------------------------
-   6. Customer-wise Sales
-   --------------------------------------------------------- */
 SELECT
     Customer,
-    SUM(Gross_amount) AS total_sales,
+    SUM(sales) AS total_sales,
     SUM(Pcs) AS total_units,
-    ROUND(SUM(Gross_amount) / NULLIF(SUM(Pcs), 0), 2) AS avg_rate_per_unit,
-    ROUND(SUM(Gross_amount) * 100.0 / SUM(SUM(Gross_amount)) OVER (), 2) AS percent_of_total_sales
-FROM sales_data
+    ROUND(SUM(sales) / NULLIF(SUM(Pcs), 0), 2) AS avg_rate_per_unit,
+    ROUND(SUM(sales) * 100.0 / SUM(SUM(sales)) OVER (), 2) AS percent_of_total_sales
+FROM 
+ `dynamic-market-476712-i8.Sales_data.sales_report`
 GROUP BY Customer
 ORDER BY total_sales DESC;
 
-
 /* ---------------------------------------------------------
-   7. Top 5 SKUs by Sales
+   6. Top 5 SKUs by Sales
    --------------------------------------------------------- */
+
 SELECT
     SKU,
-    SUM(Gross_amount) AS total_sales,
+    SUM(sales) AS total_sales,
     SUM(Pcs) AS total_units
-FROM sales_data
+FROM 
+ `dynamic-market-476712-i8.Sales_data.sales_report`
 GROUP BY SKU
 ORDER BY total_sales DESC
-LIMIT 5;
+LIMIT 5
