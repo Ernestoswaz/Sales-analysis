@@ -24,4 +24,5 @@ Sales transaction data containing order date, product, region, units sold, and s
 - Google Sheets
 
 ## Outcome
-The analysis helps stakeholders focus on high-impact products and regions, improving decision-making and sales strategy.
+The analysis helps stakeholders focus on high-impact products, customer, 
+and time to improving decision-making and sales strategy.
