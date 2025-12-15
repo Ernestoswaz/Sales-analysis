@@ -1,8 +1,8 @@
 # Sales Performance Analysis
 
 ## Problem
-The business needs to understand sales performance across products, regions, and time in order
-to identify revenue drivers and underperforming areas.
+The business needs to understand sales performance across products, customer, 
+and time to identify revenue drivers and trends and underperforming areas.
 
 ## Dataset
 Sales transaction data containing order date, product, region, units sold, and sales amount.
